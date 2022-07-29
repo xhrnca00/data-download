@@ -1,0 +1,20 @@
+# compiler python files
+__pycache__
+
+# development environment
+venv
+test_*.py
+login.txt
+
+# additional development files
+json_ref
+todos.md
+*.jpg
+
+# files created after running scripts
+last_*_args.txt
+images
+input.json
+
+# mock image to display instead of downloading
+!mock_image.jpg
