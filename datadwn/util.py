@@ -4,13 +4,17 @@ from pathlib import Path as _Path
 from typing import Any as _Any
 from typing import Dict as _Dict
 from typing import List as _List
+from typing import NamedTuple as _NamedTuple
 from typing import Union as _Union
+
+import pandas as _pd
 
 # type aliases
 json_obj = _Dict[str, _Any]
 json_list = _List[json_obj]
-vehicle_type = str
-"possible values: car, van, bus, motorbike, truck, lighttruck, industrial"
+veh_type = str  # possible values: car, van, bus, motorbike, truck, lighttruck, industrial
+table = _pd.DataFrame
+t_row = _NamedTuple
 
 
 def round_to_digits(num: float, digits: int) -> _Union[int, float]:

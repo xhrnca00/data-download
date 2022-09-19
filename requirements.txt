@@ -1,3 +1,5 @@
-requests
+aioconsole
+aiofiles
+httpx
 pandas
 opencv-python

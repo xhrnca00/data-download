@@ -6,8 +6,8 @@ from os.path import sep as _sep
 # * preventing a circular import
 LOG_LEVEL = _logging.DEBUG
 
-if True:
-    from .net_downloader import NetLevels as _NetLevels
+if True:  # NOSONAR
+    from .net_worker import NetLevels as _NetLevels
     from .util import base_off_cwd as _base_off_cwd
 
 # download.py args
@@ -15,13 +15,12 @@ SAVE_ARGS = False
 SAVE_DIR = _base_off_cwd(f"..{_sep}images", __file__)
 BASE_URL = "https://localhost"
 DOWNLOAD_DELAY = 0.5
-BOTH_DIRECTIONS = True
 FILE_EXTENSION = "jpg"
 VERIFY = False
-NET_LEVEL = _NetLevels.THREE.number  # 3
+NET_LEVEL = _NetLevels.ZERO.number  # 0
 DATA_LIMIT = 10  # in mb
-INPUT_FILE = _base_off_cwd(f"..{_sep}vehicles.json", __file__)
-REQUEST = ""
+INPUT_FILE = _base_off_cwd(f"..{_sep}vehicles.csv", __file__)
+LINK_VERSION = True
 
 # image tags
 TAG_PREFERENCE = ("SNAP", "SNAPB")

@@ -1,0 +1,15 @@
+{
+    "head": [
+        "vehicleId",
+        "frontLpCountry",
+        "frontLpNumber",
+        "rearLpCountry",
+        "rearLpNumber",
+        "timestamp",
+        "lane",
+        "gvw",
+        "length",
+        "ucid",
+        "flags.X"
+    ]
+}

@@ -1,0 +1,124 @@
+Traceback (most recent call last):
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\backends\asyncio.py", line 33, in read
+    return await self._stream.receive(max_bytes=max_bytes)
+  File "D:\PTJ\python\python370\lib\site-packages\anyio\_backends\_asyncio.py", line 1265, in receive
+    await self._protocol.read_event.wait()
+  File "D:\PTJ\python\python370\lib\asyncio\locks.py", line 293, in wait
+    await fut
+concurrent.futures._base.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_exceptions.py", line 8, in map_exceptions
+    yield
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\backends\asyncio.py", line 35, in read
+    return b""
+  File "D:\PTJ\python\python370\lib\site-packages\anyio\_core\_tasks.py", line 118, in __exit__
+    raise TimeoutError
+TimeoutError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_transports\default.py", line 60, in map_httpcore_exceptions
+    yield
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_transports\default.py", line 239, in __aiter__
+    async for part in self._httpcore_stream:
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\connection_pool.py", line 346, in __aiter__
+    async for part in self._stream:
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\http11.py", line 300, in __aiter__
+    raise exc
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\http11.py", line 293, in __aiter__
+    async for chunk in self._connection._receive_response_body(**kwargs):
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\http11.py", line 165, in _receive_response_body
+    event = await self._receive_event(timeout=timeout)
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\http11.py", line 178, in _receive_event
+    self.READ_NUM_BYTES, timeout=timeout
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\backends\asyncio.py", line 35, in read
+    return b""
+  File "D:\PTJ\python\python370\lib\contextlib.py", line 130, in __exit__
+    self.gen.throw(type, value, traceback)
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_exceptions.py", line 12, in map_exceptions
+    raise to_exc(exc)
+httpcore.ReadTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "d:\PTJ\data-download\datadwn\logic.py", line 71, in get_images
+    await asyncio.gather(*(
+  File "d:\PTJ\data-download\datadwn\logic.py", line 104, in get_image
+    self.json_parser.get_images(veh_json))
+  File "d:\PTJ\data-download\datadwn\logic.py", line 127, in _download_image
+    def _create_json_link(self, id: int) -> str:
+  File "d:\PTJ\data-download\datadwn\net_worker.py", line 171, in _get_level_2
+    r = await self._get_level_3(api_url)
+  File "d:\PTJ\data-download\datadwn\net_worker.py", line 181, in _get_level_3
+    res = await self._actual_get(api_url)
+  File "d:\PTJ\data-download\datadwn\net_worker.py", line 190, in _actual_get
+    return await self.client.get(api_url)
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 1760, in get
+    extensions=extensions,
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 1527, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 1628, in send
+    raise exc
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 1622, in send
+    await response.aread()
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_models.py", line 896, in aread
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_models.py", line 896, in <listcomp>
+    self._content = b"".join([part async for part in self.aiter_bytes()])
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_models.py", line 914, in aiter_bytes
+    async for raw_bytes in self.aiter_raw():
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_models.py", line 972, in aiter_raw
+    async for raw_stream_bytes in self.stream:
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 146, in __aiter__
+    async for chunk in self._stream:
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_transports\default.py", line 240, in __aiter__
+    yield part
+  File "D:\PTJ\python\python370\lib\contextlib.py", line 130, in __exit__
+    self.gen.throw(type, value, traceback)
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_transports\default.py", line 77, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\PTJ\python\python370\lib\runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "D:\PTJ\python\python370\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\adapter/../..\debugpy\launcher/../..\debugpy\__main__.py", line 39, in <module>
+    cli.main()
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\adapter/../..\debugpy\launcher/../..\debugpy/..\debugpy\server\cli.py", line 430, in main
+    run()
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\adapter/../..\debugpy\launcher/../..\debugpy/..\debugpy\server\cli.py", line 284, in run_file
+    runpy.run_path(target, run_name="__main__")
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\_vendored\pydevd\_pydevd_bundle\pydevd_runpy.py", line 322, in run_path
+    pkg_name=pkg_name, script_name=fname)
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\_vendored\pydevd\_pydevd_bundle\pydevd_runpy.py", line 136, in _run_module_code
+    mod_name, mod_spec, pkg_name, script_name)
+  File "c:\Users\adamh\.vscode\extensions\ms-python.python-2022.14.0\pythonFiles\lib\python\debugpy\_vendored\pydevd\_pydevd_bundle\pydevd_runpy.py", line 124, in _run_code
+    exec(code, run_globals)
+  File "d:\PTJ\data-download\download.py", line 86, in <module>
+    asyncio.run(main())
+  File "D:\PTJ\python\python370\lib\asyncio\runners.py", line 43, in run
+    return loop.run_until_complete(main)
+  File "D:\PTJ\python\python370\lib\asyncio\base_events.py", line 587, in run_until_complete
+    return future.result()
+  File "d:\PTJ\data-download\download.py", line 82, in main
+    await downloader.get_images()
+  File "d:\PTJ\data-download\datadwn\logic.py", line 75, in get_images
+    finally:
+  File "d:\PTJ\data-download\datadwn\net_worker.py", line 103, in close_connection
+    await self.client.aclose()
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_client.py", line 1968, in aclose
+    await self._transport.aclose()
+  File "D:\PTJ\python\python370\lib\site-packages\httpx\_transports\default.py", line 365, in aclose
+    await self._pool.aclose()
+  File "D:\PTJ\python\python370\lib\site-packages\httpcore\_async\connection_pool.py", line 313, in aclose
+    f"The connection pool was closed while {requests_still_in_flight} "
+RuntimeError: The connection pool was closed while 1 HTTP requests/responses were still in-flight.

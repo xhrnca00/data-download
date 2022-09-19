@@ -15,6 +15,4 @@ todos.md
 last_*_args.txt
 images
 input.json
-
-# mock image to display instead of downloading
-!mock_image.jpg
+*.csv
