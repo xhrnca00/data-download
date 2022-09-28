@@ -34,4 +34,4 @@ class ImSaver:
             raise OSError(f"File {image_path} already exists")
         async with aiofiles.open(image_path, "wb") as imfile:
             await imfile.write(imdata)
-            logger.debug(f"Saved image to {image_path}")
+            logger.info(f"Saved image to {image_path}")

@@ -2,6 +2,7 @@ import logging as _logging
 
 from os.path import sep as _sep
 
+
 # Initialize log_level first, as im_downloader uses it
 # * preventing a circular import
 LOG_LEVEL = _logging.DEBUG

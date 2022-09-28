@@ -8,7 +8,7 @@ from hashlib import md5
 from string import ascii_lowercase
 from typing import Dict, Optional
 
-from httpx import ConnectError
+from httpx import HTTPError
 
 from .defaults import TAG_PREFERENCE
 from .im_saver import ImSaver
@@ -94,8 +94,10 @@ class Downloader:
         # * download json
         try:
             veh_json = await self._download_json(json_link)
-        except (ConnectError, ValueError) as e:  # TODO: handle ValueError in a different place
-            logger.error(f"Error downloading json: {e}, " +
+        except (HTTPError, ValueError) as e:  # TODO: handle ValueError in a different place
+            if isinstance(e, HTTPError) and e._request is None:
+                return
+            logger.error(f"Error downloading json: {repr(e)}, " +
                          f"url: {self.net_worker.get_full_url(json_link)}")
             return
         # * get image link
@@ -103,14 +105,16 @@ class Downloader:
             image_link = get_preferred_view_link(
                 self.json_parser.get_images(veh_json))
         except ValueError as e:
-            logger.error(f"Error getting image url: {e}")
+            logger.error(f"Error getting image url: {repr(e)}")
             return
         self.parsed_vehicles += 1
         # * download image
         try:
             image = await self._download_image(image_link)
-        except ConnectError as e:
-            logger.error(f"Error downloading image: {e}, " +
+        except HTTPError as e:
+            if e._request is None:
+                return
+            logger.error(f"Error downloading image: {repr(e)}, " +
                          f"url: {self.net_worker.get_full_url(image_link)}")
             return
         self.downloaded_images += 1
@@ -120,7 +124,7 @@ class Downloader:
         try:
             await self.saver.save_image(image, image_path)
         except OSError as e:
-            logger.error(f"Error saving image: {e}")
+            logger.error(f"Error saving image: {repr(e)}")
             return
         self.saved_images += 1
 
@@ -130,21 +134,21 @@ class Downloader:
         return f"/api{'/1.0' if self.link_has_version else ''}/vehicle/detail?id={id}"
 
     async def _download_image(self, api_url: str) -> bytes:
-        """Raises ConnectError if response is not 2**"""
+        """Raises HTTPError if response is not 2**"""
         res = await self.net_worker.get(api_url)
         if res.is_success:
             return res.content
         else:
-            raise ConnectError(
+            raise HTTPError(
                 f"Server responded with a bad status code: {res.status_code} ({res.reason_phrase})")
 
     async def _download_json(self, api_url: str) -> json_obj:
-        """Raises ConnectError if response is not 2**"""
+        """Raises HTTPError if response is not 2**"""
         res = await self.net_worker.get(api_url)
         if res.is_success:
             return self.json_parser.get_vehicle(res.text)
         else:
-            raise ConnectError(
+            raise HTTPError(
                 f"Server responded with a bad status code: {res.status_code} ({res.reason_phrase})")
 
 
@@ -164,30 +168,31 @@ def get_preferred_view_link(images_list: json_list) -> str:
                      f"known usable tags: {TAG_PREFERENCE}")
 
 
-def resolve_ucid(ucid: int) -> Optional[veh_type]:
+def resolve_ucid(ucid: int) -> veh_type:
     if ucid in (1, 3, 4):
-        return f"car_{ucid}"
+        type_ = f"car"
     elif ucid in (2, 31, 34, 35, 51, 55, 56,):
-        return f"van_{ucid}"
+        type_ = f"van"
     elif ucid in (27, 28, 36, 44, 57,):
-        return f"bus_{ucid}"
+        type_ = f"bus"
     elif ucid in (30,):
-        return f"motorbike_{ucid}"
+        type_ = f"motorbike"
     elif ucid in ():
         # * there is no class for industrial, as their axles could be anything
         logger.critical(f"There is no way you got here, ucid: {ucid}")
-        return f"industrial_{ucid}"
+        type_ = f"industrial"
     elif ucid in (5,):
-        return f"lighttruck_{ucid}"
+        type_ = f"lighttruck"
     elif ucid in (
         # without image data, there is no real way to differentiate
         6, 9, 10, 11, 13, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29,
         32, 38, 39, 40, 41, 42, 43, 50, 52, 53, 54, 60, 61, 63, 64,
         65, 66, 67, 68, 70, 71, 72, 79, 403, 611, 612, 613, 614, 615,
     ):
-        return f"truck_{ucid}"
+        type_ = f"truck"
     else:
-        return None
+        type_ = "unknown"
+    return (type_, ucid)
 
 
 class LocTypeDirector():
@@ -199,8 +204,9 @@ class LocTypeDirector():
 
     def get_imsavepath(self, vehicle: json_obj, image: bytes) -> str:
         ucid = self.json_parser.get_ucid(vehicle)
-        v_type = None if ucid is None else resolve_ucid(ucid)
-        type_dir = f"undefined_{ucid}" if v_type is None else v_type
+        v_type, id_ = ("unknown", "unknown") if ucid is None \
+            else resolve_ucid(ucid)
+        type_dir = f"{v_type}\\{id_}"
         l_code = self.json_parser.get_lane_description(vehicle)
         if l_code is None:
             l_code = self.loc_code

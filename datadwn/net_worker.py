@@ -178,11 +178,13 @@ class NetWorker:
             logger.debug(f"Currrently flying requests: {self.flying_requests}")
             await self._flying_lock.acquire()
         self.flying_requests += 1
-        res = await self._actual_get(api_url)
-        if self.flying_requests == MAX_REQUEST_LIMIT:
-            self._flying_lock.release()
-        self.flying_requests -= 1
-        return res
+        try:
+            res = await self._actual_get(api_url)
+            return res
+        finally:
+            if self.flying_requests == MAX_REQUEST_LIMIT:
+                self._flying_lock.release()
+            self.flying_requests -= 1
 
     async def _actual_get(self, api_url: str) -> httpx.Response:
         logger.important(f"GET: {self.get_full_url(api_url)}")
